@@ -126,95 +126,97 @@ This setup mimics real-world scenarios where different API operations require di
 
 ## Testing
 
-You can test the API using tools like Postman or curl. Remember to include a valid JWT token in the Authorization header of your requests:
+You can test the API using tools like Postman or curl. This guide will walk you through the process of obtaining a JWT token from Okta and using it to interact with the FakeBook API.
 
+### Prerequisites
+- Postman or curl installed
+- Your Okta developer account credentials
+
+### Step 1 & 2: Obtain JWT Token from Okta
+
+#### 1. Construct a Token Request for Client Credentials
+
+**Endpoint:** `https://dev-45134456.okta.com/oauth2/default/v1/token`
+**HTTP Method:** POST
+**Headers:**
+- Content-Type: application/x-www-form-urlencoded
+
+**Body:**
+```
+grant_type=client_credentials
+client_id=<your_client_id>
+client_secret=<your_client_secret>
+scope=fakebookapi.read
+```
+
+#### 2. Send Token Request and Extract Token
+
+- Send the request to Okta's token endpoint
+- Okta will return a JWT access token
+- You can decode and inspect the token at [jwt.io](https://jwt.io)
+
+**Note:** 
+- Using `openid` as the scope will fail (Why? OpenID Connect scopes are not applicable for Client Credentials flow)
+- No ID token or refresh token is provided in this flow
+
+![Okta Token Request](https://github.com/user-attachments/assets/47782948-46c4-4865-b1da-a0a28f927ce5)
+
+### Step 3 & 4: Use the Token with FakeBook API
+
+#### 3. Prepare API Request
+
+**Endpoint:** `http://localhost:5000/books/1`
+**HTTP Method:** GET
+**Headers:**
 ```
 Authorization: Bearer <your_jwt_token>
 ```
-**Step 1 and 2:** Get token (JWT) from Okta for a specific scope (for ex: fakebookapi.read)
 
+#### 4. Send Request to FakeBook API
 
-=============================================================================
-STEP 1 : Construct a Token Request for Client credentials
-============================================================================
+Send the request and observe the response. You should receive details of the book with ID 1.
 
-ENDPOINT   => https://dev-45134456.okta.com/oauth2/default/v1/token
-HTTP TYPE  => POST
+![FakeBook API Request](https://github.com/user-attachments/assets/77e4e3af-d813-4182-aaae-aa87c81fe5dc)
 
-grant_type=client_credentials
-client_id=<client_id>
-client_secret=<client_secret>
-scope= fakebookapi.read
+### Step 5: Attempt to Create a Book (Expected to Fail)
+
+**Endpoint:** `http://localhost:5000/books`
+**HTTP Method:** POST
+**Headers:**
 ```
-
-
-=============================================================================
-STEP 2 : Send Token Request and extract Token
-=============================================================================
-
-=> Use openid as scope and it should fail ( why? )
-=> Okta returns JWT access tokens 
-=> Dissect token in jwt.io 
-=> No ID token and no refresh token
+Authorization: Bearer <your_jwt_token>
+Content-Type: application/json
 ```
-
-<img width="1291" alt="image" src="https://github.com/user-attachments/assets/47782948-46c4-4865-b1da-a0a28f927ce5">
-
-
-**Step 3 and 4:** Use that token to send a request to the Flask App
-
+**Body:** (Example)
 ```json
-=============================================================================
-STEP 4 : Send a FakeBookAPI request (Get one Books)
-=============================================================================
-
-ENDPOINT   => http://localhost:5000/books/1
-HTTP TYPE  => GET 
-
-{Pass Bearer token in header}
+{
+  "title": "New Book",
+  "author": "John Doe",
+  "cost": 9.99,
+  "num_pages": 200
+}
 ```
 
-<img width="1315" alt="image" src="https://github.com/user-attachments/assets/77e4e3af-d813-4182-aaae-aa87c81fe5dc">
+This request will fail because the access token only has the `fakebookapi.read` scope.
 
-
-Step 5: Create a book. The below fails because the Access token we received earlier is only for [fakebookapi.read](http://fakebookapi.read) scope.  
-
-```json
-=============================================================================
-STEP 5 : Send a FakeBookAPI request (Create a book)
-=============================================================================
-
-ENDPOINT   => http://localhost:8080/books
-HTTP TYPE  => POST 
-
-{Pass Bearer token in header}
-{Pass JSON in BODY}
-```
-
-to summarize:
+### Summary of Scope Requirements
 
 - To read books (GET /books or GET /books/<id>), the JWT token must have the 'fakebookapi.read' scope.
 - To create a new book (POST /books), the JWT token must have the 'fakebookapi.admin' scope.
 - If a token doesn't have the required scope, the request will be denied with a 403 error.
 
-In order to fix this we need to get a new token which also contains [fakebookapi.](http://fakebookapi.read)admin scope.
+### Obtaining a Token with Admin Scope
 
-```json
-=============================================================================
-STEP 1 : Construct a Token Request for Client credentials
-============================================================================
+To create books, you need a token with both `fakebookapi.read` and `fakebookapi.admin` scopes:
 
-ENDPOINT   => https://dev-45134456.okta.com/oauth2/default/v1/token
-HTTP TYPE  => POST
-
+**Endpoint:** `https://dev-45134456.okta.com/oauth2/default/v1/token`
+**HTTP Method:** POST
+**Body:**
+```
 grant_type=client_credentials
-client_id=<client_id>
-client_secret=<client_secret>
-scope= fakebookapi.read fakebookapi.admin
+client_id=<your_client_id>
+client_secret=<your_client_secret>
+scope=fakebookapi.read fakebookapi.admin
 ```
 
-test
-
-
-
-
+Use this new token to successfully create books via the POST /books endpoint.
