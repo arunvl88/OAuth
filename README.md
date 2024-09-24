@@ -132,17 +132,6 @@ You can test the API using tools like Postman or curl. Remember to include a val
 Authorization: Bearer <your_jwt_token>
 ```
 
-## Security Considerations
 
-- Always use HTTPS in production.
-- Keep your Okta credentials and JWKS URI confidential.
-- Regularly update dependencies to patch any security vulnerabilities.
 
-## Contributing
 
-Contributions to improve the project are welcome. Please follow the standard fork-and-pull request workflow.
-
-## License
-
-[Specify your license here]# OAuth
-Understanding OAuth through a project
