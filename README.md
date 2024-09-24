@@ -16,6 +16,18 @@ This setup demonstrates a real-world scenario where a backend service or cron jo
 
 By implementing this flow, we ensure that only authenticated and authorized clients can access our API, with fine-grained control over permissions using OAuth scopes.
 
+## Project Overview
+
+This project demonstrates the implementation of OAuth 2.0 Client Credentials flow using Okta as the authorization server. The setup involves three main components:
+
+1. **FakeBook API Server**: A Flask-based API that manages book information and requires OAuth 2.0 token authentication.
+
+2. **Okta Client Application**: An application registered in Okta that represents the client seeking access to the FakeBook API.
+
+3. **Postman (Emulating a Cron Job)**: Used to simulate a backend service or scheduled job that interacts with the FakeBook API using OAuth 2.0 tokens.
+
+Below, we'll go through the setup and usage of each of these components in detail.
+
 # FakeBook API
 
 ## Introduction
