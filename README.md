@@ -190,11 +190,12 @@ Content-Type: application/json
 **Body:** (Example)
 ```json
 {
-  "title": "New Book",
-  "author": "John Doe",
-  "cost": 9.99,
-  "num_pages": 200
-}
+        "author": "Woziek Schezcny",
+        "cost": 7.99,
+        "id": 1,
+        "num_pages": 300,
+        "title": "And Then There Were None"
+    }
 ```
 
 This request will fail because the access token only has the `fakebookapi.read` scope.
