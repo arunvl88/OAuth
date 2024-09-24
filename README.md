@@ -10,6 +10,9 @@ The API provides endpoints for managing a collection of books, with different ac
 
 This setup mimics real-world scenarios where different API operations require different levels of access.
 
+<img width="800" alt="image" src="https://github.com/user-attachments/assets/7782ee33-46e8-4d9e-a5e1-715bc81112bb">
+
+
 ## Setup and Installation
 
 ### Prerequisites
