@@ -133,7 +133,7 @@ Authorization: Bearer <your_jwt_token>
 ```
 **Step 1 and 2:** Get token (JWT) from Okta for a specific scope (for ex: fakebookapi.read)
 
-```json
+
 =============================================================================
 STEP 1 : Construct a Token Request for Client credentials
 ============================================================================
@@ -147,7 +147,7 @@ client_secret=<client_secret>
 scope= fakebookapi.read
 ```
 
-```json
+
 =============================================================================
 STEP 2 : Send Token Request and extract Token
 =============================================================================
