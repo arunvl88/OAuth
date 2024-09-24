@@ -1,3 +1,21 @@
+#OAuth 2.0 Client Credentials Flow
+
+<img width="782" alt="image" src="https://github.com/user-attachments/assets/e9f674b0-c75d-4803-b5ac-7a92c9909b68">
+
+The above diagram illustrates the OAuth 2.0 Client Credentials flow implemented in this project:
+
+1. A client application (simulated by Postman acting as a Cron Job) requests an access token from the Okta Authorization Server using the Client Credentials grant type.
+2. Okta's Authorization Server validates the client credentials and issues an access token.
+3. The client then calls the FakeBook API with the obtained access token.
+4. The FakeBook API validates the token by retrieving the public signing keys from Okta's JSON Web Key Set (JWKS) endpoint.
+5. If the token is valid and has the required scopes, the API processes the request and returns the response.
+
+This setup demonstrates a real-world scenario where a backend service or cron job needs to access an API securely without user interaction. The FakeBook API provides endpoints for managing a collection of books, with different access levels based on OAuth scopes:
+- Reading book information requires the 'fakebookapi.read' scope
+- Adding new books requires the 'fakebookapi.admin' scope
+
+By implementing this flow, we ensure that only authenticated and authorized clients can access our API, with fine-grained control over permissions using OAuth scopes.
+
 # FakeBook API
 
 ## Introduction
