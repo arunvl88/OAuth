@@ -192,19 +192,13 @@ Content-Type: application/json
 {
         "author": "Woziek Schezcny",
         "cost": 7.99,
-        "id": 1,
+        "id": 6,
         "num_pages": 300,
         "title": "And Then There Were None"
     }
 ```
 
 This request will fail because the access token only has the `fakebookapi.read` scope.
-
-### Summary of Scope Requirements
-
-- To read books (GET /books or GET /books/<id>), the JWT token must have the 'fakebookapi.read' scope.
-- To create a new book (POST /books), the JWT token must have the 'fakebookapi.admin' scope.
-- If a token doesn't have the required scope, the request will be denied with a 403 error.
 
 ### Obtaining a Token with Admin Scope
 
@@ -221,3 +215,11 @@ scope=fakebookapi.read fakebookapi.admin
 ```
 
 Use this new token to successfully create books via the POST /books endpoint.
+
+### Summary of Scope Requirements
+
+- To read books (GET /books or GET /books/<id>), the JWT token must have the 'fakebookapi.read' scope.
+- To create a new book (POST /books), the JWT token must have the 'fakebookapi.admin' scope.
+- If a token doesn't have the required scope, the request will be denied with a 403 error.
+
+
