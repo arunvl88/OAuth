@@ -451,6 +451,21 @@ Replace the placeholders:
 - {YOUR_REDIRECT_URI}: Your configured redirect URI (e.g., http://localhost:7001/callback)
 - {SCOPES}: openid profile email fakebookapi.read offline_access
 
+#### Understanding `state` and `nonce` parameters:
+
+1. `state`:
+   - The `state` parameter is used to maintain the state of the application during the authorization process.
+   - It helps prevent cross-site request forgery (CSRF) attacks.
+   - When you receive the response from Okta, you should verify that the `state` value matches the one you sent.
+   - In a real application, you would typically use a randomly generated, unique value for each request.
+
+2. `nonce`:
+   - The `nonce` (number used once) is a random value used to associate a client session with an ID token and to mitigate replay attacks.
+   - When you receive the ID token, you should verify that the `nonce` claim in the token matches the one you sent in the request.
+   - Like `state`, in a production environment, you would generate a unique `nonce` for each authorization request.
+
+For this demonstration, we're using static values (`state123` and `test123`), but in a real-world scenario, these should be dynamically generated, unique values for each authorization request.
+
 ### STEP 5: Run a Local Web Server
 
 Start a local web server to capture the Authorization Code:
