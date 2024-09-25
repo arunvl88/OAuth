@@ -490,6 +490,32 @@ Note:
 
 For this demonstration, we're using static values (`state123` and `test123`), but in a real-world scenario, these should be dynamically generated, unique values for each authorization request.
 
+#### Client Secret in OAuth 2.0 Authorization Code Flow
+
+1. **Obtaining the Authorization Code:**
+   - The client secret is NOT required when requesting the authorization code.
+   - This step involves user authentication and authorization.
+   - The client ID is used to identify the application to Okta, but the user credentials (not the client secret) are used for authentication.
+
+2. **Exchanging the Authorization Code for Tokens:**
+   - The client secret IS required when exchanging the authorization code for tokens.
+   - This step happens server-side and does not involve user authentication.
+   - The client secret proves the identity of the application to Okta.
+
+Key Points:
+- The authorization process (getting the code) requires user login but not the client secret.
+- The token exchange process (getting the tokens) requires the client secret but not user authentication.
+
+Why this design?
+- User Authentication: The initial step ensures that the user grants permission to the application.
+- Application Authentication: The second step ensures that only the legitimate application can exchange the code for tokens.
+
+In practice:
+- When a user clicks "Login with Okta," they're redirected to Okta to authenticate (first step).
+- After user approval, your application servers use the client secret to securely obtain tokens (second step).
+
+This two-step process enhances security by separating user authentication from application authentication, ensuring that sensitive credentials (like the client secret) are never exposed to the frontend or the user.
+
 ### STEP 5: Run a Local Web Server
 
 Start a local web server to capture the Authorization Code:
