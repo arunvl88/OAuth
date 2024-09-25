@@ -361,3 +361,43 @@ If you attempt to use 'openid' as a scope in the client credentials grant, the r
 
 If you include 'openid' in your scope request for a client credentials grant, you'll typically receive an error response from the authorization server indicating that the scope is not valid for this grant type.
 
+# User Authentication Flow with Authorization Code Grant
+
+This section demonstrates the OAuth 2.0 Authorization Code flow, which is used for user authentication in web applications.
+
+## Flow Diagram
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant WebApp as Web App (localhost:8080)
+    participant Okta as Okta Authorization Server
+    participant FakeBookAPI as FakeBook API Resource Server
+
+    User->>WebApp: 1. Initiates login
+    WebApp->>Okta: 2. Redirects for authentication
+    Okta->>User: 3. Presents login page
+    User->>Okta: 4. Enters credentials
+    Okta->>WebApp: 5. Redirects with authorization code
+    WebApp->>Okta: 6. Exchanges code for access token
+    Note right of WebApp: Simulated in Postman
+    Okta->>WebApp: 7. Returns access token
+    WebApp->>FakeBookAPI: 8. Requests resource with access token
+    FakeBookAPI->>WebApp: 9. Returns requested resource
+    WebApp->>User: 10. Displays data
+```
+
+## Flow Description
+
+1. The user initiates the login process on the web application running on `http://localhost:8080`.
+2. The web app redirects the user to Okta for authentication.
+3. Okta presents a login page to the user.
+4. The user enters their credentials on the Okta login page.
+5. Upon successful authentication, Okta redirects back to the web app with an authorization code.
+6. The web app exchanges this authorization code for an access token (This step is simulated using Postman in our setup).
+7. Okta returns an access token to the web app.
+8. The web app uses this access token to request resources from the FakeBook API resource server.
+9. The FakeBook API validates the token and returns the requested resources.
+10. The web app displays the retrieved data to the user.
+
+This flow ensures secure user authentication and authorization before allowing access to protected resources in the FakeBook API.
