@@ -403,3 +403,28 @@ sequenceDiagram
 10. The web app displays the retrieved data to the user.
 
 This flow ensures secure user authentication and authorization before allowing access to protected resources in the FakeBook API.
+
+## Okta Setup
+
+1. Log in to your Okta Developer Console.
+
+2. Navigate to "Applications" > "Create App Integration".
+
+3. Select "OIDC - OpenID Connect" as the sign-on method and "Web Application" as the application type.
+
+4. Click "Next".
+
+5. Configure the app integration:
+   - App integration name: FakebookAuthCodeClient
+   - Grant types: Check "Authorization Code" and "Refresh Token"
+   - Sign-in redirect URIs: http://localhost:7001
+   - Sign-out redirect URIs: http://localhost:7001
+   - Controlled access: Allow everyone in your organization to access
+
+6. Click "Save" to create the application.
+
+7. Note down the following credentials (you'll need these for the next steps):
+   - Client ID
+   - Client Secret
+
+8. Under the "Assignments" tab, ensure that the appropriate users or groups are assigned to the application.
