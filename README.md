@@ -428,3 +428,58 @@ This flow ensures secure user authentication and authorization before allowing a
    - Client Secret
 
 8. Under the "Assignments" tab, ensure that the appropriate users or groups are assigned to the application.
+
+## Authorization Code Flow Steps
+
+After setting up your Okta application, follow these steps to complete the Authorization Code flow:
+
+### STEP 4: Construct an Authorization URL
+
+Construct a URL to send to the Okta Authorization Server:
+
+- Identify your authorize endpoint in your Okta application settings
+- Use the following scopes: "openid profile email fakebookapi.read offline_access"
+
+URL Format:
+```
+https://{YOUR_OKTA_DOMAIN}/oauth2/default/v1/authorize?response_type=code&client_id={YOUR_CLIENT_ID}&state=state123&redirect_uri={YOUR_REDIRECT_URI}&scope={SCOPES}&nonce=test123
+```
+
+Replace the placeholders:
+- {YOUR_OKTA_DOMAIN}: Your Okta domain (e.g., dev-2148273.okta.com)
+- {YOUR_CLIENT_ID}: The client ID of your Okta application
+- {YOUR_REDIRECT_URI}: Your configured redirect URI (e.g., http://localhost:7001/callback)
+- {SCOPES}: openid profile email fakebookapi.read offline_access
+
+### STEP 5: Run a Local Web Server
+
+Start a local web server to capture the Authorization Code:
+
+```
+python -m http.server 7001
+```
+
+Note: This step is optional if you've already set up a web server in previous steps.
+
+### STEP 6: Send an Authorization Request
+
+1. Open the constructed URL (from Step 4) in your web browser.
+2. Log in using your Okta credentials.
+3. After successful authentication, you'll be redirected to your redirect URI.
+4. Capture the Authorization Code from:
+   - The web server output console, or
+   - The browser's address bar in the redirect URL
+
+### STEP 7: Exchange the Authorization Code for Tokens
+
+Construct a token request to exchange the Authorization Code for an access token:
+
+- Use the token endpoint from your Okta application settings
+- Use the grant type "authorization_code"
+- Include the Authorization Code obtained in Step 6
+
+We'll use Postman to make this request in the next section.
+
+---
+
+These steps demonstrate the core flow of the Authorization Code grant. In a production environment, these steps would typically be handled automatically by your web application.
