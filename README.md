@@ -65,14 +65,15 @@ To use this API with Okta as the authorization server, you need to set up an Okt
    - In the "Scopes" tab, add the `fakebookapi.read` and `fakebookapi.admin` scopes if they don't already exist
 
 7. Update Your Application:
+   - https://dev-45134456.okta.com/oauth2/default/.well-known/openid-configuration
    - Open the `app.py` file in your project
-   - Replace the `OKTA_JWKS_URI` with your Okta domain's JWKS URI:
+   - It will look similar to below. Replace the `OKTA_JWKS_URI` with your Okta domain's JWKS URI:
      ```python
      OKTA_JWKS_URI = 'https://{yourOktaDomain}/oauth2/default/v1/keys'
      ```
    - Replace `{yourOktaDomain}` with your actual Okta domain (e.g., `dev-1234567.okta.com`)
 
-Now you're ready to use these credentials in Postman to obtain access tokens and test your FakeBook API.
+Now you're ready to use these credentials in Postman to obtain access tokens from Okta and test your FakeBook API.
 
 # FakeBook API
 
@@ -131,7 +132,10 @@ This setup mimics real-world scenarios where different API operations require di
    ```python
    OKTA_JWKS_URI = 'https://your-okta-domain.okta.com/oauth2/default/v1/keys'
    ```
-
+   JWKS endpoint URI can also be obtained through the below URL (double check this to make sure you are using the correct URI):
+   - https://dev-45134456.okta.com/oauth2/default/.well-known/openid-configuration
+   - Replace `dev-45134456.okta.com` with your actual Okta domain (e.g., `dev-1234567.okta.com`)
+     
 2. Ensure your Okta application is set up with the correct scopes ('fakebookapi.read' and 'fakebookapi.admin'). 
 
 ## Running the Application
