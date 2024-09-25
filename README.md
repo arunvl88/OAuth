@@ -30,7 +30,7 @@ This project demonstrates the implementation of OAuth 2.0 Client Credentials flo
 
 Below, we'll go through the setup and usage of each of these components in detail.
 
-# Okta Developer Account Setup
+## Okta Developer Account Setup
 
 To use this API with Okta as the authorization server, you need to set up an Okta developer account and create an application. Follow these steps:
 
@@ -77,9 +77,9 @@ To use this API with Okta as the authorization server, you need to set up an Okt
 
 Now you're ready to use these credentials in Postman to obtain access tokens from Okta and test your FakeBook API.
 
-# FakeBook API
+## FakeBook API
 
-## Introduction
+### Introduction
 
 FakeBook API is a Flask-based RESTful API that demonstrates OAuth 2.0 integration with Okta for authentication and authorization. This project showcases how to implement secure, scope-based access control for API endpoints using JSON Web Tokens (JWTs) issued by Okta.
 
@@ -255,7 +255,7 @@ This setup mimics real-world scenarios where different API operations require di
    ```
 
 
-# Testing With Postman
+## Testing With Postman
 
 You can test the API using tools like Postman or curl. This guide will walk you through the process of obtaining a JWT token from Okta and using it to interact with the FakeBook API.
 
