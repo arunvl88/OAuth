@@ -285,4 +285,13 @@ Use this new token to successfully create books via the POST /books endpoint.
 - To create a new book (POST /books), the JWT token must have the 'fakebookapi.admin' scope.
 - If a token doesn't have the required scope, the request will be denied with a 403 error.
 
+### Note on OpenID Connect Scopes:
+If you attempt to use 'openid' as a scope in the client credentials grant, the request will fail. Here's why:
+
+- The 'openid' scope is specific to OpenID Connect (OIDC), which is an identity layer on top of OAuth 2.0.
+- The client credentials grant is designed for machine-to-machine communication where there's no user involved.
+- OIDC scopes like 'openid', 'profile', or 'email' are meant for obtaining information about a user.
+- In a client credentials flow, there's no user context, so these OIDC scopes are not applicable.
+
+If you include 'openid' in your scope request for a client credentials grant, you'll typically receive an error response from the authorization server indicating that the scope is not valid for this grant type.
 
