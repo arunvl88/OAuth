@@ -153,38 +153,104 @@ This setup mimics real-world scenarios where different API operations require di
 
 ### Main Components
 
-1. **Flask and Flask-RESTful Setup**:
+1. **Flask and Flask-RESTful Setup** (Lines 1-5, 10-13):
    The application uses Flask as the web framework and Flask-RESTful for creating RESTful APIs.
+   ```python
+   from flask import Flask, jsonify, request
+   from flask_restful import Api, Resource
+   # ...
+   app = Flask(__name__)
+   api = Api(app)
+   ```
 
-2. **JWT Verification**:
+2. **JWT Verification** (Lines 6-7, 14-16):
    Custom JWT verification is implemented using PyJWKClient, which fetches the signing key from Okta's JWKS endpoint.
+   ```python
+   from jwt import PyJWKClient, decode as jwt_decode, exceptions as jwt_exceptions
+   # ...
+   OKTA_JWKS_URI = 'https://dev-45134456.okta.com/oauth2/default/v1/keys'
+   jwks_client = PyJWKClient(OKTA_JWKS_URI)
+   ```
 
-3. **Scope-based Access Control**:
+3. **Scope-based Access Control** (Lines 40-54):
    The `require_scope` decorator checks for required scopes in the JWT claims.
+   ```python
+   def require_scope(required_scope):
+       def decorator(fn):
+           @wraps(fn)
+           def wrapper(*args, **kwargs):
+               # ... (scope checking logic)
+           return wrapper
+       return decorator
+   ```
 
-4. **Book Model and Data**:
+4. **Book Model and Data** (Lines 17-36):
    A simple `FakeBook` class represents book objects, with a list of books stored in memory.
+   ```python
+   class FakeBook:
+       def __init__(self, id, title, author, cost, num_pages):
+           # ... (FakeBook initialization)
+   
+   books = [
+       FakeBook(1, "And Then There Were None", "Agatha Christie", 7.99, 300),
+       # ... (more books)
+   ]
+   ```
 
-5. **API Resources**:
-   - `BookList`: Handles GET (list all books) and POST (add a new book) requests.
-   - `Book`: Handles GET requests for individual books.
+5. **API Resources** (Lines 55-80):
+   * `BookList`: Handles GET (list all books) and POST (add a new book) requests.
+   * `Book`: Handles GET requests for individual books.
+   ```python
+   class BookList(Resource):
+       @require_scope('fakebookapi.read')
+       def get(self):
+           # ... (GET logic)
+   
+       @require_scope('fakebookapi.admin')
+       def post(self):
+           # ... (POST logic)
+   
+   class Book(Resource):
+       @require_scope('fakebookapi.read')
+       def get(self, book_id):
+           # ... (GET single book logic)
+   ```
 
 ### Key Functions
 
-1. **verify_jwt(token)**:
+1. **verify_jwt(token)** (Lines 25-35):
    Verifies the JWT using Okta's JWKS. It handles token expiration and invalidity.
+   ```python
+   def verify_jwt(token):
+       try:
+           signing_key = jwks_client.get_signing_key_from_jwt(token)
+           decoded_token = jwt_decode(token, signing_key.key, algorithms=["RS256"], audience='api://default')
+           return decoded_token
+       except jwt_exceptions.ExpiredSignatureError:
+           return {"message": "Token has expired"}, 401
+       except jwt_exceptions.InvalidTokenError:
+           return {"message": "Invalid token"}, 401
+   ```
 
-2. **require_scope(required_scope)**:
+2. **require_scope(required_scope)** (Lines 40-54):
    A decorator that checks if the JWT contains the required scope for the operation.
+   ```python
+   def require_scope(required_scope):
+       def decorator(fn):
+           @wraps(fn)
+           def wrapper(*args, **kwargs):
+               # ... (scope checking logic)
+           return wrapper
+       return decorator
+   ```
 
-3. **before_request()**:
+3. **before_request()** (Lines 85-87):
    Ensures the application remains stateless by disabling session creation.
-
-## API Endpoints
-
-- GET /books: Retrieve all books (requires 'fakebookapi.read' scope)
-- POST /books: Add a new book (requires 'fakebookapi.admin' scope)
-- GET /books/<id>: Retrieve a specific book (requires 'fakebookapi.read' scope)
+   ```python
+   @app.before_request
+   def before_request():
+       request.environ['werkzeug.session_interface'] = None
+   ```
 
 
 # Testing With Postman
