@@ -28,6 +28,52 @@ This project demonstrates the implementation of OAuth 2.0 Client Credentials flo
 
 Below, we'll go through the setup and usage of each of these components in detail.
 
+# Okta Developer Account Setup
+
+To use this API with Okta as the authorization server, you need to set up an Okta developer account and create an application. Follow these steps:
+
+1. Sign up for an Okta Developer Account:
+   - Go to [https://developer.okta.com/](https://developer.okta.com/)
+   - Click on "Sign Up" and complete the registration process
+
+2. Create a new Application:
+   - Log in to your Okta developer dashboard
+   - Navigate to Applications > Create App Integration
+   - Select "API Services" as the type of application
+   - Click "Next"
+
+3. Configure the Application:
+   - Name: Enter "FakeBook Cron" (or any name you prefer)
+   - Grant type: Ensure "Client Credentials" is selected
+   - Click "Save"
+
+4. Assign API Scopes:
+   - In your new application's settings, go to the "Scopes" tab
+   - Add the following scopes:
+     - `fakebookapi.read`
+     - `fakebookapi.admin`
+   - If these scopes don't exist, you may need to create them in your Authorization Server settings
+
+5. Copy Credentials:
+   - In the "General" tab of your application, you will find the "Client ID"
+   - Click on "Show" next to "Client secret" to reveal the secret
+   - Copy both the Client ID and Client secret; you'll need these for authentication in Postman
+
+6. Configure Your Authorization Server:
+   - Go to Security > API > Authorization Servers
+   - Select your authorization server (or create a new one if needed)
+   - In the "Scopes" tab, add the `fakebookapi.read` and `fakebookapi.admin` scopes if they don't already exist
+
+7. Update Your Application:
+   - Open the `app.py` file in your project
+   - Replace the `OKTA_JWKS_URI` with your Okta domain's JWKS URI:
+     ```python
+     OKTA_JWKS_URI = 'https://{yourOktaDomain}/oauth2/default/v1/keys'
+     ```
+   - Replace `{yourOktaDomain}` with your actual Okta domain (e.g., `dev-1234567.okta.com`)
+
+Now you're ready to use these credentials in Postman to obtain access tokens and test your FakeBook API.
+
 # FakeBook API
 
 ## Introduction
@@ -86,7 +132,7 @@ This setup mimics real-world scenarios where different API operations require di
    OKTA_JWKS_URI = 'https://your-okta-domain.okta.com/oauth2/default/v1/keys'
    ```
 
-2. Ensure your Okta application is set up with the correct scopes ('fakebookapi.read' and 'fakebookapi.admin').
+2. Ensure your Okta application is set up with the correct scopes ('fakebookapi.read' and 'fakebookapi.admin'). 
 
 ## Running the Application
 
@@ -136,53 +182,8 @@ This setup mimics real-world scenarios where different API operations require di
 - POST /books: Add a new book (requires 'fakebookapi.admin' scope)
 - GET /books/<id>: Retrieve a specific book (requires 'fakebookapi.read' scope)
 
-## Okta Developer Account Setup
 
-To use this API with Okta as the authorization server, you need to set up an Okta developer account and create an application. Follow these steps:
-
-1. Sign up for an Okta Developer Account:
-   - Go to [https://developer.okta.com/](https://developer.okta.com/)
-   - Click on "Sign Up" and complete the registration process
-
-2. Create a new Application:
-   - Log in to your Okta developer dashboard
-   - Navigate to Applications > Create App Integration
-   - Select "API Services" as the type of application
-   - Click "Next"
-
-3. Configure the Application:
-   - Name: Enter "FakeBook Cron" (or any name you prefer)
-   - Grant type: Ensure "Client Credentials" is selected
-   - Click "Save"
-
-4. Assign API Scopes:
-   - In your new application's settings, go to the "Scopes" tab
-   - Add the following scopes:
-     - `fakebookapi.read`
-     - `fakebookapi.admin`
-   - If these scopes don't exist, you may need to create them in your Authorization Server settings
-
-5. Copy Credentials:
-   - In the "General" tab of your application, you will find the "Client ID"
-   - Click on "Show" next to "Client secret" to reveal the secret
-   - Copy both the Client ID and Client secret; you'll need these for authentication in Postman
-
-6. Configure Your Authorization Server:
-   - Go to Security > API > Authorization Servers
-   - Select your authorization server (or create a new one if needed)
-   - In the "Scopes" tab, add the `fakebookapi.read` and `fakebookapi.admin` scopes if they don't already exist
-
-7. Update Your Application:
-   - Open the `app.py` file in your project
-   - Replace the `OKTA_JWKS_URI` with your Okta domain's JWKS URI:
-     ```python
-     OKTA_JWKS_URI = 'https://{yourOktaDomain}/oauth2/default/v1/keys'
-     ```
-   - Replace `{yourOktaDomain}` with your actual Okta domain (e.g., `dev-1234567.okta.com`)
-
-Now you're ready to use these credentials in Postman to obtain access tokens and test your FakeBook API.
-
-## Testing
+# Testing With Postman
 
 You can test the API using tools like Postman or curl. This guide will walk you through the process of obtaining a JWT token from Okta and using it to interact with the FakeBook API.
 
