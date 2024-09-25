@@ -440,16 +440,41 @@ Construct a URL to send to the Okta Authorization Server:
 - Identify your authorize endpoint in your Okta application settings
 - Use the following scopes: "openid profile email fakebookapi.read offline_access"
 
+```
+=============================================================================
+STEP 1 : Construct a Authorization URL to send to Okta Authorization Server
+============================================================================
+
+ENDPOINT   => https://dev-45134456.okta.com/oauth2/default/v1/authorize
+HTTP TYPE  => POST
+
+response_type=code
+redirect_uri=http://localhost:7001
+client_id=example
+client_secret=example12345
+scope= openid profile email fakebookapi.read offline_access
+```
+
 URL Format:
 ```
 https://{YOUR_OKTA_DOMAIN}/oauth2/default/v1/authorize?response_type=code&client_id={YOUR_CLIENT_ID}&state=state123&redirect_uri={YOUR_REDIRECT_URI}&scope={SCOPES}&nonce=test123
 ```
 
-Replace the placeholders:
-- {YOUR_OKTA_DOMAIN}: Your Okta domain (e.g., dev-2148273.okta.com)
-- {YOUR_CLIENT_ID}: The client ID of your Okta application
-- {YOUR_REDIRECT_URI}: Your configured redirect URI (e.g., http://localhost:7001/callback)
-- {SCOPES}: openid profile email fakebookapi.read offline_access
+Example URL:
+```
+https://dev-12345678.okta.com/oauth2/default/v1/authorize?response_type=code&client_id=0oa1bcde2fGhIJklm3n4&state=state123&redirect_uri=http%3A%2F%2Flocalhost%3A7001&scope=openid%20profile%20email%20fakebookapi.read%20offline_access&nonce=test123
+```
+
+In this example:
+- `{YOUR_OKTA_DOMAIN}` is replaced with `dev-12345678.okta.com`
+- `{YOUR_CLIENT_ID}` is replaced with `0oa1bcde2fGhIJklm3n4`
+- `{YOUR_REDIRECT_URI}` is replaced with `http://localhost:7001` (URL-encoded)
+- `{SCOPES}` is replaced with `openid profile email fakebookapi.read offline_access` (URL-encoded)
+
+Note: 
+- The redirect URI and scopes are URL-encoded in the actual URL. Spaces are replaced with `%20`, and other special characters are similarly encoded.
+- Make sure to replace the domain, client ID, and redirect URI with your actual Okta application details.
+- The `state` and `nonce` values (`state123` and `test123`) are used for demonstration. In a real application, these should be unique, randomly generated values for each request.
 
 #### Understanding `state` and `nonce` parameters:
 
