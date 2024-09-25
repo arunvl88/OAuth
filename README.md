@@ -1,4 +1,6 @@
-# OAuth 2.0 Client Credentials Flow
+# Machine-to-Machine Authentication with Client Credentials Grant
+
+This section demonstrates the OAuth 2.0 Client Credentials flow, which is used for machine-to-machine authentication without user involvement.
 
 <img width="782" alt="image" src="https://github.com/user-attachments/assets/e9f674b0-c75d-4803-b5ac-7a92c9909b68">
 
