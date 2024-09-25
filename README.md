@@ -451,7 +451,6 @@ HTTP TYPE  => POST
 response_type=code
 redirect_uri=http://localhost:7001
 client_id=example
-client_secret=example12345
 scope= openid profile email fakebookapi.read offline_access
 ```
 
