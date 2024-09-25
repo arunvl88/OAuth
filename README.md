@@ -372,7 +372,7 @@ This section demonstrates the OAuth 2.0 Authorization Code flow, which is used f
 ```mermaid
 sequenceDiagram
     participant User
-    participant WebApp as Web App (localhost:8080)
+    participant WebApp as Web App (localhost:7001)
     participant Okta as Okta Authorization Server
     participant FakeBookAPI as FakeBook API Resource Server
 
