@@ -574,6 +574,9 @@ Construct a token request to exchange the Authorization Code for an access token
 - Use the grant type "authorization_code"
 - Include the Authorization Code obtained in Step 6
 
+<img width="1295" alt="image" src="https://github.com/user-attachments/assets/a5e9c8fe-530b-4a20-8ab6-5ee090a7705a">
+
+
 We'll use Postman to make this request in the next section.
 
 ---
