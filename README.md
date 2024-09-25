@@ -391,7 +391,7 @@ sequenceDiagram
 
 ## Flow Description
 
-1. The user initiates the login process on the web application running on `http://localhost:8080`.
+1. The user initiates the login process on the web application running on `http://localhost:7001`.
 2. The web app redirects the user to Okta for authentication.
 3. Okta presents a login page to the user.
 4. The user enters their credentials on the Okta login page.
@@ -484,6 +484,37 @@ Note: This step is optional if you've already set up a web server in previous st
 4. Capture the Authorization Code from:
    - The web server output console, or
    - The browser's address bar in the redirect URL
+  
+#### Okta Authorization and Redirection Process
+
+1. **Initial Request**: The user's browser sends the authorization request to Okta.
+
+2. **Okta Authentication**: Okta authenticates the user (if not already authenticated) and processes the authorization request.
+
+3. **Okta Response**: After successful authentication and authorization, Okta sends a response back to the user's browser. This response is typically an HTTP 302 (Found) redirect.
+
+4. **Browser Redirection**: The user's browser receives this redirect response and automatically follows it, sending a new request to the specified redirect URI.
+
+5. **Redirect to Application**: This new request to the redirect URI includes the authorization code as a query parameter.
+
+So, the process is:
+
+```
+User's Browser -> Okta -> User's Browser -> Redirect URI
+```
+
+Not:
+
+```
+User's Browser -> Okta -> Redirect URI
+```
+
+This method ensures that:
+- The authorization code is never directly exposed to the client application server.
+- The code is transmitted through the user's browser, which is considered a secure front-channel in OAuth 2.0.
+- The client application can validate that the request is coming from the same user who initiated the authentication process.
+
+This flow is a crucial security feature of the OAuth 2.0 Authorization Code grant, as it prevents certain types of attacks and ensures that the authorization code is only delivered to the intended recipient through the user's authenticated session.
 
 ### STEP 7: Exchange the Authorization Code for Tokens
 
