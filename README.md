@@ -686,3 +686,73 @@ The FakeBook API trusts this request for several important reasons:
 By trusting Okta to handle authentication and using the access token to convey authorization, the API can focus on providing resources to authenticated and authorized clients without managing user credentials directly. This separation of concerns enhances security and simplifies the API's authentication logic.
 
 Remember, the security of this system relies on protecting the access token. Always transmit it securely and never expose it in client-side code or public repositories.
+
+### STEP 9: Demonstrate Scope Limitations and Resolution
+
+In this step, we'll attempt to add a book to the FakeBook API using the access token obtained in previous steps. This will demonstrate how scopes restrict access to certain operations.
+
+#### 9.1 Attempt to Add a Book (Expected to Fail)
+
+1. **Prepare the API Request**
+
+   Endpoint: `http://localhost:5000/books`
+   Method: POST
+   Headers:
+   - `Authorization: Bearer <your_access_token>`
+   - `Content-Type: application/json`
+   
+   Body:
+   ```json
+   {
+        "author": "Woztec Scenszny",
+        "cost": 15.9,
+        "id": 6,
+        "num_pages": 528,
+        "title": "The keeper"
+    }
+   ```
+
+2. **Make the API Call**
+
+   Example using curl:
+   ```bash
+   curl -X POST 'http://localhost:5000/books' \
+   -H 'Authorization: Bearer <your_access_token>' \
+   -H 'Content-Type: application/json' \
+   -d '{"title": "New Book Title", "author": "John Doe", "cost": 19.99, "num_pages": 250}'
+   ```
+
+3. **Expected Response**
+
+   You should receive a 403 Forbidden error, indicating that your token doesn't have the necessary permissions.
+
+#### 9.2 Resolving the Scope Limitation
+
+To add books, you need a token with the 'fakebookapi.admin' scope. Here's how to obtain it:
+
+1. **Update Okta Application Settings**
+   - In your Okta Developer Console, go to your application settings.
+   - Ensure that the 'fakebookapi.admin' scope is added to the allowed scopes for your application.
+
+2. **Request a New Token with Admin Scope**
+   - Construct a new authorization URL, adding 'fakebookapi.admin' to the scope parameter:
+     ```
+     https://{YOUR_OKTA_DOMAIN}/oauth2/default/v1/authorize?response_type=code&client_id={YOUR_CLIENT_ID}&state=state123&redirect_uri={YOUR_REDIRECT_URI}&scope=openid profile email fakebookapi.read fakebookapi.admin offline_access&nonce=test123
+     ```
+
+3. **Follow the Authorization Process**
+   - Open the new URL in a browser.
+   - Log in and authorize the additional scope.
+   - Capture the new authorization code.
+
+4. **Exchange the New Code for Tokens**
+   - Use the new authorization code to obtain a fresh set of tokens, including one with the admin scope.
+
+5. **Retry Adding a Book**
+   - Repeat the POST request to add a book, using the new access token with admin scope.
+
+6. **Expected Outcome**
+   - With the correct scope, you should now be able to successfully add a book to the API.
+
+This demonstration highlights the importance of proper scope management in OAuth 2.0. It shows how scopes can be used to implement fine-grained access control, allowing certain operations only to tokens with specific permissions.
+
