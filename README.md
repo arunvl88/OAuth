@@ -433,7 +433,7 @@ This flow ensures secure user authentication and authorization before allowing a
 
 After setting up your Okta application, follow these steps to complete the Authorization Code flow:
 
-### STEP 4: Construct an Authorization URL
+### STEP 1: Construct an Authorization URL
 
 Construct a URL to send to the Okta Authorization Server:
 
@@ -516,7 +516,7 @@ In practice:
 
 This two-step process enhances security by separating user authentication from application authentication, ensuring that sensitive credentials (like the client secret) are never exposed to the frontend or the user.
 
-### STEP 5: Run a Local Web Server
+### STEP 2: Run a Local Web Server
 
 Start a local web server to capture the Authorization Code:
 
@@ -526,7 +526,7 @@ python -m http.server 7001
 
 Note: This step is optional if you've already set up a web server in previous steps.
 
-### STEP 6: Send an Authorization Request
+### STEP 3: Send an Authorization Request
 
 1. Open the constructed URL (from Step 4) in your web browser.
 2. Log in using your Okta credentials.
@@ -566,7 +566,7 @@ This method ensures that:
 
 This flow is a crucial security feature of the OAuth 2.0 Authorization Code grant, as it prevents certain types of attacks and ensures that the authorization code is only delivered to the intended recipient through the user's authenticated session.
 
-### STEP 7: Exchange the Authorization Code for Tokens
+### STEP 4: Exchange the Authorization Code for Tokens
 
 Construct a token request to exchange the Authorization Code for an access token:
 
@@ -582,3 +582,63 @@ We'll use Postman to make this request in the next section.
 ---
 
 These steps demonstrate the core flow of the Authorization Code grant. In a production environment, these steps would typically be handled automatically by your web application.
+
+### STEP 5: Call the FakeBook API to Retrieve Books
+
+After obtaining the access token in the previous step, you can now use it to make authenticated requests to the FakeBook API.
+
+1. **Prepare the API Request**
+
+   Endpoint: `http://localhost:5000/books`
+   Method: GET
+   Headers:
+   - `Authorization: Bearer <your_access_token>`
+
+2. **Make the API Call**
+
+   You can use tools like Postman, curl, or any HTTP client library in your preferred programming language.
+
+   Example using curl:
+   ```bash
+   curl -X GET 'http://localhost:5000/books' \
+   -H 'Authorization: Bearer <your_access_token>'
+   ```
+
+   Replace `<your_access_token>` with the actual access token you received from Okta.
+
+3. **Expected Response**
+
+   If your request is successful, you should receive a JSON response containing a list of books. For example:
+
+   ```json
+   [
+     {
+       "id": 1,
+       "title": "And Then There Were None",
+       "author": "Agatha Christie",
+       "cost": 7.99,
+       "num_pages": 300
+     },
+     {
+       "id": 2,
+       "title": "A Study in Scarlet",
+       "author": "Arthur Conan Doyle",
+       "cost": 7.99,
+       "num_pages": 108
+     },
+     // ... more books ...
+   ]
+   ```
+
+4. **Troubleshooting**
+
+   - If you receive a 401 Unauthorized error, check that your access token is valid and hasn't expired.
+   - If you receive a 403 Forbidden error, ensure that your token includes the necessary scope (e.g., 'fakebookapi.read').
+
+5. **Token Expiration**
+
+   Access tokens have a limited lifespan. If your token expires, you'll need to obtain a new one using the refresh token (if available) or by repeating the authorization process.
+
+Remember to keep your access token secure and never expose it in client-side code or public repositories.
+
+This step demonstrates the successful use of the OAuth 2.0 flow to access protected resources in your FakeBook API. By using the access token obtained through the Authorization Code flow, you've securely authenticated and authorized the request to retrieve book data.
