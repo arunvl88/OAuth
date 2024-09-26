@@ -753,6 +753,9 @@ To add books, you need a token with the 'fakebookapi.admin' scope. Here's how to
 
 6. **Expected Outcome**
    - With the correct scope, you should now be able to successfully add a book to the API.
+  
+<img width="1290" alt="image" src="https://github.com/user-attachments/assets/5f456f27-e0ed-4d5a-9e52-4d4da1fcc106">
+
 
 This demonstration highlights the importance of proper scope management in OAuth 2.0. It shows how scopes can be used to implement fine-grained access control, allowing certain operations only to tokens with specific permissions.
 
