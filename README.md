@@ -1,3 +1,24 @@
+This project demonstrates the implementation of two key OAuth 2.0 authentication flows using Okta as the authorization server and a Flask-based API as the resource server. The FakeBook API showcases how to secure and access protected resources using different OAuth 2.0 grant types, catering to various use cases in modern application architectures.
+
+The project covers two main authentication scenarios:
+
+1. **Machine-to-Machine Authentication with Client Credentials Grant**
+   - Demonstrates how to authenticate and authorize requests between services or applications without user involvement.
+   - Ideal for backend services, cron jobs, or any scenario where a human user is not directly involved.
+   - Shows how to obtain and use access tokens for machine-to-machine communication.
+
+2. **User Authentication Flow with Authorization Code Grant**
+   - Illustrates the process of authenticating users and obtaining their authorization to access protected resources.
+   - Suitable for web applications where user interaction is required.
+   - Demonstrates the complete flow from user login to accessing protected API endpoints on behalf of the user.
+
+Key Features:
+- Integration with Okta for robust identity and access management.
+- Implementation of a Flask-based API serving as the resource server.
+- Detailed step-by-step guide for setting up and testing both authentication flows.
+- Explanation of OAuth 2.0 concepts, including token handling, scope usage, and security considerations.
+
+
 # Machine-to-Machine Authentication with Client Credentials Grant
 
 This section demonstrates the OAuth 2.0 Client Credentials flow, which is used for machine-to-machine authentication without user involvement.
