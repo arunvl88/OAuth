@@ -642,3 +642,21 @@ After obtaining the access token in the previous step, you can now use it to mak
 Remember to keep your access token secure and never expose it in client-side code or public repositories.
 
 This step demonstrates the successful use of the OAuth 2.0 flow to access protected resources in your FakeBook API. By using the access token obtained through the Authorization Code flow, you've securely authenticated and authorized the request to retrieve book data.
+
+#### Why the API Trusts This Request
+
+The FakeBook API trusts this request for several important reasons:
+
+1. **Valid Access Token**: The request includes a valid access token issued by Okta, a trusted authorization server.
+
+2. **Token Verification**: The API verifies the token's signature using Okta's public key (available at the JWKS endpoint). This ensures the token hasn't been tampered with.
+
+3. **Scope Validation**: The API checks that the token includes the necessary scope (e.g., 'fakebookapi.read') for the requested operation.
+
+4. **Token Claims**: The token contains claims (like issuer, audience, expiration time) that the API validates to ensure the token is intended for this specific API and is still valid.
+
+5. **Secure Transmission**: The access token is sent over HTTPS, preventing interception or manipulation in transit.
+
+By trusting Okta to handle authentication and using the access token to convey authorization, the API can focus on providing resources to authenticated and authorized clients without managing user credentials directly. This separation of concerns enhances security and simplifies the API's authentication logic.
+
+Remember, the security of this system relies on protecting the access token. Always transmit it securely and never expose it in client-side code or public repositories.
