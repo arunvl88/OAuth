@@ -762,3 +762,70 @@ To add books, you need a token with the 'fakebookapi.admin' scope. Here's how to
 
 This demonstration highlights the importance of proper scope management in OAuth 2.0. It shows how scopes can be used to implement fine-grained access control, allowing certain operations only to tokens with specific permissions.
 
+## Understanding Scopes and Claims
+
+OAuth 2.0 uses scopes to define the extent of access that a client application is requesting. When combined with OpenID Connect (OIDC), scopes also determine what user information (claims) is included in the tokens.
+
+### Scopes
+
+1. **OAuth 2.0 Scopes**:
+   - `fakebookapi.read`: Allows read access to book information.
+   - `fakebookapi.admin`: Allows administrative actions like adding new books.
+
+2. **OpenID Connect Scopes**:
+   - `openid`: Required for OpenID Connect. Requests an ID token.
+   - `profile`: Requests access to default profile claims (e.g., name, picture).
+   - `email`: Requests access to the email and email_verified claims.
+
+### Claims
+
+Claims are pieces of information about the user or the authentication event. The specific claims returned depend on the scopes requested and the Okta configuration.
+
+#### ID Token Claims
+
+When you include `openid` in your scope request, Okta will provide an ID token. The contents of this token can include:
+
+- Standard claims: `sub` (subject identifier), `iss` (issuer), `aud` (audience), `exp` (expiration time), `iat` (issued at time)
+- Profile claims (if `profile` scope is included): `name`, `family_name`, `given_name`, `middle_name`, `nickname`, `preferred_username`, `profile`, `picture`, `website`, `gender`, `birthdate`, `zoneinfo`, `locale`, `updated_at`
+- Email claims (if `email` scope is included): `email`, `email_verified`
+
+### Configuring Claims in Okta
+
+Okta allows you to configure which claims are included in the tokens:
+
+1. Log in to your Okta Developer Console.
+2. Navigate to Security > API > Authorization Servers.
+3. Select your authorization server (or create a new one).
+4. Go to the "Claims" tab.
+5. Here you can add, edit, or remove claims for ID tokens and access tokens.
+
+You can configure claims to include additional user information such as:
+- First name
+- Last name
+- Groups
+- Custom attributes
+
+### Example
+
+If you request scopes `openid profile email fakebookapi.read`, you might receive:
+
+1. An access token with the `fakebookapi.read` scope.
+2. An ID token with claims like:
+   ```json
+   {
+     "sub": "00uid4BxXw6I6TV4m0g3",
+     "name": "John Doe",
+     "preferred_username": "john.doe@example.com",
+     "email": "john.doe@example.com",
+     "email_verified": true
+   }
+   ```
+
+Remember, the exact claims returned depend on your Okta configuration and the scopes requested.
+
+### Best Practices
+
+1. Only request the scopes and claims your application needs.
+2. Use the access token for API authorization and the ID token for user information.
+3. Always verify the tokens on your server before trusting the claims.
+4. Keep sensitive information out of public claim
