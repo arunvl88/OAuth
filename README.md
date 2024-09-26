@@ -1,3 +1,5 @@
+# OAuth 2.0 Authentication Demonstration
+
 This project demonstrates the implementation of two key OAuth 2.0 authentication flows using Okta as the authorization server and a Flask-based API as the resource server. The FakeBook API showcases how to secure and access protected resources using different OAuth 2.0 grant types, catering to various use cases in modern application architectures.
 
 The project covers two main authentication scenarios:
