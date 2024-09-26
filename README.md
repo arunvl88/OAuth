@@ -726,6 +726,9 @@ In this step, we'll attempt to add a book to the FakeBook API using the access t
 
    You should receive a 403 Forbidden error, indicating that your token doesn't have the necessary permissions.
 
+<img width="1300" alt="image" src="https://github.com/user-attachments/assets/b5468d71-e834-46b6-840d-f242ddcd6d52">
+
+
 #### 9.2 Resolving the Scope Limitation
 
 To add books, you need a token with the 'fakebookapi.admin' scope. Here's how to obtain it:
