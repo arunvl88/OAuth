@@ -630,6 +630,9 @@ After obtaining the access token in the previous step, you can now use it to mak
    ]
    ```
 
+   <img width="1305" alt="image" src="https://github.com/user-attachments/assets/c29d2675-ca1f-4040-a2af-7a33f77c27e4">
+
+
 4. **Troubleshooting**
 
    - If you receive a 401 Unauthorized error, check that your access token is valid and hasn't expired.
