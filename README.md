@@ -830,7 +830,7 @@ Remember, the exact claims returned depend on your Okta configuration and the sc
 3. Always verify the tokens on your server before trusting the claims.
 4. Keep sensitive information out of public claim
 
-# JWT (JSON Web Token) Documentation
+# JWT (JSON Web Token)
 
 ## Overview
 
