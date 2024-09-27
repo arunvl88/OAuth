@@ -1026,6 +1026,76 @@ Similar to Client Secret JWT, but uses an asymmetric key pair.
 
 **Use case:** Highest security option, ideal for highly sensitive applications.
 
+## JWT Signing: Client Secret JWT vs Private Key JWT
+
+An important security consideration when choosing between Client Secret JWT and Private Key JWT is the ability to prevent tampering or re-signing of the token by the recipient (in this case, Okta).
+
+### Client Secret JWT
+
+With Client Secret JWT:
+
+1. **Shared Secret**: Both the client and Okta possess the same secret key.
+2. **Symmetric Encryption**: The same key is used for both signing and verification.
+3. **Potential for Re-signing**: Because Okta has the secret key, it could theoretically:
+   - Modify the contents of the JWT
+   - Re-sign the modified JWT with the same secret
+   - The modified JWT would still be valid
+
+This doesn't mean Okta would do this, but the technical possibility exists.
+
+### Private Key JWT
+
+With Private Key JWT:
+
+1. **Asymmetric Key Pair**: The client has a private key, and Okta only has the corresponding public key.
+2. **Asymmetric Encryption**: 
+   - The private key is used for signing
+   - The public key is used for verification
+3. **Impossible to Re-sign**: Okta cannot modify and re-sign the JWT because:
+   - Okta only possesses the public key
+   - The public key can verify the signature but cannot create a new valid signature
+   - Any modification to the JWT would invalidate the signature
+
+### Why This Matters
+
+1. **Non-repudiation**: With Private Key JWT, the client can prove that only they could have created the JWT. This is not possible with Client Secret JWT.
+
+2. **Trust Model**: Private Key JWT reduces the need to trust the recipient (Okta) not to modify the token.
+
+3. **Audit Trail**: In high-security environments, Private Key JWT provides a stronger audit trail, as each signed message can be irrefutably tied to the client.
+
+4. **Regulatory Compliance**: Some regulatory frameworks may require the level of non-repudiation that only Private Key JWT can provide.
+
+### Implementation Consideration
+
+To implement Private Key JWT:
+
+1. Generate a public/private key pair (e.g., RSA)
+2. Keep the private key secure within your client application
+3. Register the public key with Okta
+4. Use the private key to sign JWTs for authentication
+
+```python
+# Example of signing a JWT with a private key (using python-jose library)
+from jose import jwt
+import datetime
+
+private_key = "-----BEGIN PRIVATE KEY-----\nMIIE..."  # Your private key here
+now = datetime.datetime.utcnow()
+payload = {
+    "iss": "your-client-id",
+    "sub": "your-client-id",
+    "aud": "https://your-okta-domain/oauth2/default/v1/token",
+    "iat": now,
+    "exp": now + datetime.timedelta(seconds=300),
+    "jti": "unique-jwt-id"
+}
+
+token = jwt.encode(payload, private_key, algorithm='RS256')
+```
+
+By understanding these differences, you can make an informed decision about which method best suits your security needs and trust model.
+
 ### 5. None
 
 Used for public clients that can't securely store credentials.
