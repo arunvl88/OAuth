@@ -935,3 +935,137 @@ When verifying a JWT:
 
 - [jwt.io](https://jwt.io/): A helpful tool for decoding and verifying JWTs.
 - Libraries like `pyjwt` for Python or `jsonwebtoken` for Node.js can help in working with JWTs programmatically.
+
+# Client Authentication in Okta
+
+Client authentication is a crucial security measure in OAuth 2.0 and OpenID Connect protocols. It ensures that only authorized clients can request access tokens from the authorization server. Okta supports several methods of client authentication, each with its own use cases and security considerations.
+
+## Supported Client Authentication Methods
+
+Okta supports the following client authentication methods:
+
+1. Client Secret Basic
+2. Client Secret Post
+3. Client Secret JWT
+4. Private Key JWT
+5. None (for public clients)
+
+### 1. Client Secret Basic
+
+This method uses HTTP Basic authentication.
+
+**How it works:**
+- The client ID and client secret are combined into a string "client_id:client_secret"
+- This string is then Base64 encoded
+- The encoded string is included in the Authorization header
+
+**Example:**
+```
+Authorization: Basic base64(client_id:client_secret)
+```
+
+**Use case:** Suitable for confidential clients that can securely store a client secret.
+
+### 2. Client Secret Post
+
+This method sends the client credentials in the request body.
+
+**How it works:**
+- The client ID and client secret are included as parameters in the POST request body
+
+**Example:**
+```
+POST /token HTTP/1.1
+Host: authorization-server.com
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=authorization_code&
+client_id=your_client_id&
+client_secret=your_client_secret&
+code=authorization_code
+```
+
+**Use case:** Useful when the client can't set custom headers or for legacy system compatibility.
+
+### 3. Client Secret JWT
+
+This method uses a JWT signed with the client secret.
+
+**How it works:**
+- The client creates a JWT with claims about the token request
+- The JWT is signed using the client secret
+- The JWT is sent as the client_assertion parameter in the token request
+
+**Example:**
+```
+POST /token HTTP/1.1
+Host: authorization-server.com
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=authorization_code&
+client_id=your_client_id&
+client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer&
+client_assertion=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+
+**Use case:** Provides an additional layer of security by proving possession of the client secret without transmitting it directly.
+
+### 4. Private Key JWT
+
+Similar to Client Secret JWT, but uses an asymmetric key pair.
+
+**How it works:**
+- The client creates a JWT and signs it with a private key
+- The corresponding public key is registered with Okta
+- The signed JWT is sent as the client_assertion in the token request
+
+**Example:** (Similar to Client Secret JWT, but signed with a private key)
+
+**Use case:** Highest security option, ideal for highly sensitive applications.
+
+### 5. None
+
+Used for public clients that can't securely store credentials.
+
+**How it works:**
+- Only the client_id is sent
+- No client secret or additional authentication is used
+
+**Use case:** Mobile apps, single-page applications, or other public clients.
+
+## Comparing Client Secret Basic vs Client Secret Post
+
+While both methods use the client ID and secret for authentication, they differ in how these credentials are transmitted:
+
+### Client Secret Basic:
+- Credentials are sent in the Authorization header
+- Credentials are Base64 encoded
+- Generally considered more secure as it keeps credentials out of request logs
+
+### Client Secret Post:
+- Credentials are sent in the request body
+- Credentials are sent as plain text
+- Easier to implement in some scenarios, but potentially less secure
+
+## Best Practices
+
+1. **Choose the appropriate method:** Select the authentication method based on your client type and security requirements.
+2. **Protect client secrets:** Always store client secrets securely and never expose them in public clients.
+3. **Use HTTPS:** Always use HTTPS to encrypt all communications between the client and Okta.
+4. **Rotate credentials:** Regularly rotate client secrets and keys to minimize the impact of potential breaches.
+5. **Limit scope:** Request only the scopes necessary for your application's functionality.
+
+## Configuring Client Authentication in Okta
+
+To configure client authentication in Okta:
+
+1. Log in to your Okta Developer Console
+2. Navigate to Applications > Applications
+3. Select your application
+4. Under the "General" tab, find the "Client Credentials" section
+5. Choose your preferred client authentication method
+6. Save your changes
+
+Remember to update your client application to use the chosen authentication method when requesting tokens from Okta.
+
+
