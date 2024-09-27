@@ -829,3 +829,109 @@ Remember, the exact claims returned depend on your Okta configuration and the sc
 2. Use the access token for API authorization and the ID token for user information.
 3. Always verify the tokens on your server before trusting the claims.
 4. Keep sensitive information out of public claim
+
+# JWT (JSON Web Token) Documentation
+
+## Overview
+
+JWT (JSON Web Token) is an open standard (RFC 7519) that defines a compact and self-contained way for securely transmitting information between parties as a JSON object. JWTs are commonly used for authentication and information exchange in web development, especially in the context of single sign-on (SSO).
+
+## Structure of a JWT
+
+<img width="1199" alt="image" src="https://github.com/user-attachments/assets/2e54c44e-9d60-4d2c-a36e-a8726e380a82">
+
+
+A JWT consists of three parts, separated by dots (.):
+
+1. Header
+2. Payload
+3. Signature
+
+The format looks like this: `xxxxx.yyyyy.zzzzz`
+
+Each part is Base64Url encoded, making it safe to pass in URLs.
+
+### 1. Header
+
+The header typically consists of two parts:
+- The type of token (JWT)
+- The signing algorithm being used (e.g., RS256)
+
+Example:
+```json
+{
+  "alg": "RS256",
+  "kid": "7vFBVgP3GHEP..."
+}
+```
+
+- `alg`: Specifies the algorithm used for signing (RS256 in this case)
+- `kid`: Key ID, a hint indicating which key was used to secure the JWT
+
+### 2. Payload
+
+The payload contains claims. Claims are statements about the user and additional metadata.
+
+Example:
+```json
+{
+  "ver": 1,
+  "jti": "AT.qMi3_85iYpkO...",
+  "iss": "https://dev-21482...",
+  "aud": "api://default",
+  "iat": 1668871784,
+  "exp": 1668872084,
+  "cid": "0oa3ragb1n1ZikpPy5d7",
+  "scp": [
+    "fakebookapi.read",
+    "fakebookapi.admin"
+  ],
+  "sub": "0oa3ragb1n1ZikpPy5d7"
+}
+```
+
+Common claims:
+- `ver`: Version of the token
+- `jti`: JWT ID, a unique identifier for the token
+- `iss`: Issuer of the token (often the authorization server URL)
+- `aud`: Audience the token is intended for
+- `iat`: Issued At Time (timestamp)
+- `exp`: Expiration Time (timestamp)
+- `cid`: Client ID
+- `scp`: Scopes granted to this token
+- `sub`: Subject (usually the user ID)
+
+### 3. Signature
+
+The signature is used to verify that the sender of the JWT is who it says it is and to ensure that the message wasn't changed along the way. It's created by combining the encoded header, encoded payload, and a secret key, then applying the algorithm specified in the header.
+
+## How JWT Works
+
+1. The client requests authorization from the authorization server (e.g., Okta).
+2. When authorization is granted, the authorization server returns a JWT.
+3. The client then uses this JWT to access protected resources by sending it in the Authorization header:
+   ```
+   Authorization: Bearer <token>
+   ```
+4. The server validates the JWT signature and checks the claims before granting access.
+
+## Security Considerations
+
+1. **Never store sensitive information** in the payload of a JWT, as it can be easily decoded.
+2. Always **use HTTPS** to prevent token interception.
+3. **Validate all claims** on the server side before trusting the token.
+4. Set appropriate **expiration times** for your tokens.
+5. Use **strong signing keys** and keep them secure.
+
+## Verifying a JWT
+
+When verifying a JWT:
+1. Check that the signing algorithm matches what's expected.
+2. Verify the signature using the appropriate key (often fetched from a JWKS endpoint).
+3. Validate standard claims like `exp` (expiration), `iss` (issuer), and `aud` (audience).
+4. Check any custom claims required by your application.
+
+## Tools for Working with JWTs
+
+- [jwt.io](https://jwt.io/): A helpful tool for decoding and verifying JWTs.
+- Libraries like `pyjwt` for Python or `jsonwebtoken` for Node.js can help in working with JWTs programmatically.
