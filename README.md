@@ -936,7 +936,7 @@ When verifying a JWT:
 - [jwt.io](https://jwt.io/): A helpful tool for decoding and verifying JWTs.
 - Libraries like `pyjwt` for Python or `jsonwebtoken` for Node.js can help in working with JWTs programmatically.
 
-# Client Authentication in Okta
+# Client Authentication
 
 Client authentication is a crucial security measure in OAuth 2.0 and OpenID Connect protocols. It ensures that only authorized clients can request access tokens from the authorization server. Okta supports several methods of client authentication, each with its own use cases and security considerations.
 
