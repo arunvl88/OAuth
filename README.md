@@ -1141,4 +1141,21 @@ To configure client authentication in Okta:
 
 Remember to update your client application to use the chosen authentication method when requesting tokens from Okta.
 
+### Client Authentication Documentation
+The OpenID Connect Core 1.0 Documentation specifies the different methods for Client Authentication
+
+[OpenID Connect Core - Client Authentication](https://openid.net/specs/openid-connect-core-1_0.html#ClientAuthentication)
+
+
+The following RFC contains documentation related to the Client Authentication using JWT. The JSON fields for the JWT are described in detail.
+
+[JSON Web Token (JWT) Profile for OAuth 2.0 Client Authentication and Authorization Grants](https://www.rfc-editor.org/rfc/rfc7523.html#page-5)
+
+
+In addition, Okta documentation can be found here
+
+[Client authentication methods](https://developer.okta.com/docs/reference/api/oidc/#client-authentication-methods)
+
+[Build a JWT for Client Authentication](https://developer.okta.com/docs/guides/build-self-signed-jwt/java/main/)
+
 
