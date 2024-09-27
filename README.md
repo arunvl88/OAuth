@@ -1008,6 +1008,9 @@ client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer&
 client_assertion=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ```
 
+<img width="1079" alt="image" src="https://github.com/user-attachments/assets/17ce66bf-3ca0-4d71-a8d7-058e6a343e12">
+
+
 **Use case:** Provides an additional layer of security by proving possession of the client secret without transmitting it directly.
 
 ### 4. Private Key JWT
