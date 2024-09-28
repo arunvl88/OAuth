@@ -1159,3 +1159,37 @@ In addition, Okta documentation can be found here
 [Build a JWT for Client Authentication](https://developer.okta.com/docs/guides/build-self-signed-jwt/java/main/)
 
 
+# OAuth 2.0 in Enterprise
+
+## Overview
+
+In enterprise-grade applications, OAuth 2.0 and OpenID Connect (OIDC) play crucial roles in securing microservices architectures. This document explains how these protocols are implemented in a typical enterprise environment, focusing on the integration of cloud-based authorization servers with on-premise identity providers.
+
+<img width="1050" alt="image" src="https://github.com/user-attachments/assets/9021c0e2-b6b3-400e-a1b5-a5bbe80d12f7">
+
+
+## Architecture Components
+
+1. **User**: The end-user, typically an employee of the organization.
+2. **User Agent**: The user's browser or client application.
+3. **Application (User Interface)**: The client application that the user interacts with.
+4. **App Service (Microservice)**: Individual services that make up the application's backend.
+5. **OAuth 2.0/OIDC Authorization Server**: Cloud-based authorization server (e.g., Okta).
+6. **SAML Identity Provider**: On-premise identity management system (e.g., Active Directory).
+7. **Application Datastore**: Database for storing application-specific data.
+
+## Flow Description
+
+1. User initiates login through the User Agent to the Application UI.
+2. The Application redirects to the OAuth 2.0/OIDC Authorization Server.
+3. If needed, the Authorization Server authenticates the user via the SAML Identity Provider.
+4. Upon successful authentication, the Authorization Server issues tokens to the Application.
+5. The Application calls the App Service (Microservice) with the obtained token.
+6. The App Service verifies the token with the Authorization Server before granting access.
+
+## Key Aspects of Enterprise OAuth Implementation
+
+### 1. Cloud and On-Premise Integration
+
+- **Authorization Server in Cloud**: Services like Okta provide cloud-based OAuth 2.0 and OIDC capabilities.
+- **Identity Provider On-Premise**: Many enter
