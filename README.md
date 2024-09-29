@@ -1218,11 +1218,33 @@ In enterprise-grade applications, OAuth 2.0 and OpenID Connect (OIDC) play cruci
 - These groups determine the user's access rights to different applications and resources.
 - This approach provides fine-grained access control at the organizational level.
 
-### 6. Custom Scopes for Microservices
+### Custom Scopes for Microservices
 
 - Each microservice (App Service) can define its own custom scopes.
 - These scopes represent specific permissions or access levels within the microservice.
 - The Authorization Server (e.g., Okta) must support and manage these custom scopes.
+- User access is determined by the scopes that the user has been granted access to.
+- Scopes are defined and managed on the Authorization Server:
+  - Administrators configure which scopes exist for each application/microservice.
+  - User groups or individual users are then assigned these scopes based on their roles and responsibilities.
+- When a user authenticates:
+  1. The Authorization Server checks which scopes the user is allowed to access.
+  2. It then issues tokens that include only the permitted scopes.
+  3. Microservices use these scopes to make fine-grained authorization decisions.
+- This approach allows for:
+  - Centralized management of permissions across all microservices.
+  - Dynamic adjustment of user access without changing application code.
+  - Granular control over what actions users can perform within each microservice.
+
+Example:
+- A "Human Resources" microservice might define scopes like:
+  - `hr.read.basic`: View basic employee information
+  - `hr.read.salary`: View salary information
+  - `hr.write.basic`: Update basic employee information
+  - `hr.write.salary`: Update salary information
+- An HR manager might be granted all these scopes, while a junior HR assistant might only receive `hr.read.basic` and `hr.write.basic`.
+
+By managing scopes at the Authorization Server level, enterprises can implement a flexible, scalable, and secure access control system that adapts to complex organizational structures and evolving security requirements.
 
 ### 7. Token-Based Authentication and Authorization
 
