@@ -1420,38 +1420,13 @@ Benefits:
 
 ### Non-Downsizing (Full Scope with Group Claims)
 
-Some authorization servers, like Okta, use a non-downsizing approach:
-- All scopes requested by the application are included in the access token.
-- The token also includes group claims, indicating which groups the user belongs to.
-- The application is responsible for determining which resources the user should access based on their group memberships.
+In non-downsizing implementations:
 
-Example:
-1. Application requests scopes: `read_profile`, `write_profile`, `admin_access`
-2. User belongs to group "basic_users"
-3. Token includes all requested scopes and a group claim: `{"groups": ["basic_users"]}`
-4. Application uses the group information to allow only `read_profile` actions
+- Access tokens include all scopes requested by the application, regardless of user permissions.
+- ID tokens contain group information, crucial for determining actual user permissions.
+- Applications can use refresh tokens to obtain new access tokens with only the necessary scopes.
+- The application is responsible for correctly interpreting group information and managing scope usage.
 
-Benefits:
-- Provides more flexibility at the application level.
-- Allows for dynamic permission adjustments without needing to reissue tokens.
+This approach offers flexibility in access control while maintaining broader authorization capabilities, requiring careful implementation in applications to ensure proper security.
 
-## Implementation Considerations
-
-1. **Authorization Server Configuration**:
-   - Understand your authorization server's approach (downsizing vs. non-downsizing).
-   - Configure group-to-scope mappings accordingly.
-
-2. **Application Design**:
-   - For non-downsizing servers, implement logic to interpret group claims and enforce appropriate access controls.
-   - Ensure your application can handle both downsized and non-downsized tokens if working with multiple authorization servers.
-
-3. **Security Implications**:
-   - With non-downsizing, be extra vigilant in your application's access control logic.
-   - Regularly audit your group-to-permission mappings in the application.
-
-4. **Performance Considerations**:
-   - Non-downsizing may require more processing at the application level to interpret permissions.
-   - Consider caching group-to-permission mappings for efficiency.
-
-By understanding these different approaches, developers can design their applications to work effectively with various authorization server configurations, ensuring proper access control regardless of the scope assignment strategy employed.
 
