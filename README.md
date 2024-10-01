@@ -1404,53 +1404,54 @@ By understanding these processes and interactions, developers and system archite
 
 In enterprise OAuth 2.0 implementations, the mapping of users to scopes is a crucial aspect of access control. This process is typically managed by the Authorization Server, often in conjunction with existing identity management systems like Active Directory (AD).
 
-## User-Scope Association Process
+## Scope Assignment Strategies
 
-1. **Active Directory Group Membership**:
-   - Users are assigned to specific groups in Active Directory.
-   - These groups often correspond to roles or access levels within the organization.
+Authorization servers can employ different strategies when assigning scopes to access tokens. Two common approaches are downsizing and non-downsizing.
 
-2. **Group-Scope Mapping on Authorization Server**:
-   - The Authorization Server maintains a mapping between AD groups and OAuth scopes.
-   - Administrators configure which AD groups correspond to which scopes.
+### Downsizing (Scope Filtering)
 
-3. **Scope Assignment During Authentication**:
-   - When a user authenticates, the Authorization Server:
-     a. Retrieves the user's AD group memberships.
-     b. Maps these groups to the corresponding OAuth scopes.
-     c. Assigns the relevant scopes to the user's access token.
+In this approach:
+- The authorization server only includes scopes in the access token that are associated with the user based on their group memberships.
+- Scopes requested by the application but not assigned to the user are omitted from the token.
 
-## Example Flow
+Benefits:
+- Provides a clear, pre-filtered set of permissions.
+- Reduces the need for additional filtering at the application level.
 
-1. User belongs to AD group "HR_Staff".
-2. On the Authorization Server, "HR_Staff" is mapped to scopes:
-   - `employee.read`
-   - `employee.basic_write`
-3. During authentication, the user's token is issued with these scopes.
+### Non-Downsizing (Full Scope with Group Claims)
 
-## Scope Utilization
+Some authorization servers, like Okta, use a non-downsizing approach:
+- All scopes requested by the application are included in the access token.
+- The token also includes group claims, indicating which groups the user belongs to.
+- The application is responsible for determining which resources the user should access based on their group memberships.
 
-- **Application Request**: The application requests all its associated scopes (e.g., scope1 and scope2).
-- **Authorization Server Decision**: The server only includes scopes in the token that the user is eligible for based on their AD group mappings.
-- **Access Token Content**: The access token contains only the scopes that intersect between what the application requested and what the user is allowed to access.
+Example:
+1. Application requests scopes: `read_profile`, `write_profile`, `admin_access`
+2. User belongs to group "basic_users"
+3. Token includes all requested scopes and a group claim: `{"groups": ["basic_users"]}`
+4. Application uses the group information to allow only `read_profile` actions
 
-## Microservice Authorization
+Benefits:
+- Provides more flexibility at the application level.
+- Allows for dynamic permission adjustments without needing to reissue tokens.
 
-- Each microservice (App Service) is configured to require specific scopes.
-- When receiving a request, the microservice validates that the access token contains the necessary scope(s).
+## Implementation Considerations
 
-## Benefits of this Approach
+1. **Authorization Server Configuration**:
+   - Understand your authorization server's approach (downsizing vs. non-downsizing).
+   - Configure group-to-scope mappings accordingly.
 
-1. **Centralized Management**: Scope assignments are managed centrally at the Authorization Server.
-2. **Integration with Existing Systems**: Leverages existing AD structure for access control.
-3. **Flexible and Granular**: Allows for fine-grained access control through careful scope and group design.
-4. **Scalable**: Easy to adjust access as users change roles within the organization.
+2. **Application Design**:
+   - For non-downsizing servers, implement logic to interpret group claims and enforce appropriate access controls.
+   - Ensure your application can handle both downsized and non-downsized tokens if working with multiple authorization servers.
 
-## Security Considerations
+3. **Security Implications**:
+   - With non-downsizing, be extra vigilant in your application's access control logic.
+   - Regularly audit your group-to-permission mappings in the application.
 
-- Regularly audit AD group memberships and their scope mappings.
-- Implement the principle of least privilege when assigning scopes to groups.
-- Ensure that the Authorization Server's group-to-scope mappings are kept secure and regularly reviewed.
+4. **Performance Considerations**:
+   - Non-downsizing may require more processing at the application level to interpret permissions.
+   - Consider caching group-to-permission mappings for efficiency.
 
-By implementing this user-to-scope mapping strategy, organizations can maintain a robust, flexible, and manageable access control system that integrates seamlessly with their existing identity management infrastructure.
+By understanding these different approaches, developers can design their applications to work effectively with various authorization server configurations, ensuring proper access control regardless of the scope assignment strategy employed.
 
