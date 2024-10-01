@@ -1394,3 +1394,63 @@ In this architecture, multiple sessions are maintained across different componen
 5. **Multi-Factor Authentication (MFA)**: Can be integrated into the SAML authentication process for enhanced security.
 
 By understanding these processes and interactions, developers and system architects can implement robust, secure, and user-friendly authentication and authorization flows in complex enterprise environments.
+
+
+# User to Scope Mapping in Enterprise OAuth 2.0
+
+<img width="1075" alt="image" src="https://github.com/user-attachments/assets/684b2319-3d35-48d3-8433-3349d5e00d3b">
+
+## Overview
+
+In enterprise OAuth 2.0 implementations, the mapping of users to scopes is a crucial aspect of access control. This process is typically managed by the Authorization Server, often in conjunction with existing identity management systems like Active Directory (AD).
+
+## User-Scope Association Process
+
+1. **Active Directory Group Membership**:
+   - Users are assigned to specific groups in Active Directory.
+   - These groups often correspond to roles or access levels within the organization.
+
+2. **Group-Scope Mapping on Authorization Server**:
+   - The Authorization Server maintains a mapping between AD groups and OAuth scopes.
+   - Administrators configure which AD groups correspond to which scopes.
+
+3. **Scope Assignment During Authentication**:
+   - When a user authenticates, the Authorization Server:
+     a. Retrieves the user's AD group memberships.
+     b. Maps these groups to the corresponding OAuth scopes.
+     c. Assigns the relevant scopes to the user's access token.
+
+## Example Flow
+
+1. User belongs to AD group "HR_Staff".
+2. On the Authorization Server, "HR_Staff" is mapped to scopes:
+   - `employee.read`
+   - `employee.basic_write`
+3. During authentication, the user's token is issued with these scopes.
+
+## Scope Utilization
+
+- **Application Request**: The application requests all its associated scopes (e.g., scope1 and scope2).
+- **Authorization Server Decision**: The server only includes scopes in the token that the user is eligible for based on their AD group mappings.
+- **Access Token Content**: The access token contains only the scopes that intersect between what the application requested and what the user is allowed to access.
+
+## Microservice Authorization
+
+- Each microservice (App Service) is configured to require specific scopes.
+- When receiving a request, the microservice validates that the access token contains the necessary scope(s).
+
+## Benefits of this Approach
+
+1. **Centralized Management**: Scope assignments are managed centrally at the Authorization Server.
+2. **Integration with Existing Systems**: Leverages existing AD structure for access control.
+3. **Flexible and Granular**: Allows for fine-grained access control through careful scope and group design.
+4. **Scalable**: Easy to adjust access as users change roles within the organization.
+
+## Security Considerations
+
+- Regularly audit AD group memberships and their scope mappings.
+- Implement the principle of least privilege when assigning scopes to groups.
+- Ensure that the Authorization Server's group-to-scope mappings are kept secure and regularly reviewed.
+
+By implementing this user-to-scope mapping strategy, organizations can maintain a robust, flexible, and manageable access control system that integrates seamlessly with their existing identity management infrastructure.
+
