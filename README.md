@@ -1286,3 +1286,111 @@ By managing scopes at the Authorization Server level, enterprises can implement 
 5. **User Experience**: Design the authentication flow to be seamless for end-users.
 
 By leveraging OAuth 2.0 and OIDC in this architecture, enterprises can achieve a robust, secure, and scalable system for managing access across their microservices ecosystem, while maintaining integration with existing on-premise identity systems.
+
+# OAuth 2.0 - Login, Logout, and Multiple Sessions
+
+## Overview
+
+In an enterprise environment integrating OAuth 2.0, OpenID Connect (OIDC), and SAML, the processes of login, logout, and session management become complex due to the interaction between multiple systems. This document explains these processes in detail.
+
+## Components
+
+1. **User**: The end-user attempting to access the application.
+2. **User Agent**: Typically a web browser or mobile app.
+3. **Application (User Interface)**: The client application the user interacts with.
+4. **App Service (Microservice)**: Backend services that the application calls.
+5. **OAuth 2.0/OIDC Authorization Server**: Manages OAuth flows and token issuance.
+6. **SAML Identity Provider**: Handles user authentication, often tied to Active Directory.
+
+## Login Process
+
+![image](https://github.com/user-attachments/assets/8408cc76-2ab8-4708-b0cd-59f63ffc28f8)
+
+
+1. **User Initiates Login**:
+   - User attempts to access the Application (User Interface).
+   - Application redirects to the OAuth 2.0/OIDC Authorization Server.
+
+2. **Authorization Request**:
+   - User Agent is redirected to the Authorization EP (Endpoint) of the OAuth 2.0/OIDC Authorization Server.
+   - Authorization Server checks if the user has an active session.
+
+3. **SAML Authentication**:
+   - If no active session exists, the Authorization Server redirects to the SAML Identity Provider's Login EP.
+   - User authenticates against the SAML Identity Provider (e.g., enters credentials).
+   - SAML Identity Provider validates credentials, possibly against Active Directory.
+   - Upon successful authentication, a SAML assertion is sent back to the Authorization Server.
+
+4. **Token Issuance**:
+   - Authorization Server validates the SAML assertion.
+   - It then issues OAuth tokens (access token, refresh token, and possibly ID token).
+   - User Agent is redirected back to the Application with these tokens.
+
+5. **Application Access**:
+   - Application stores the tokens securely.
+   - It can now make authenticated requests to App Services using the access token.
+
+## Logout Process
+
+<img width="1008" alt="image" src="https://github.com/user-attachments/assets/fd2e4846-ae77-48f8-8ad8-6a43cc7bf98d">
+
+
+1. **User Initiates Logout**:
+   - User clicks logout in the Application.
+
+2. **Local Logout**:
+   - Application clears local session data and tokens.
+
+3. **Global Logout**:
+   - Application redirects the user to the Authorization Server's logout endpoint.
+   - Authorization Server terminates its session.
+
+4. **SAML Logout**:
+   - Authorization Server may initiate a SAML Single Logout (SLO) request to the Identity Provider.
+   - Identity Provider terminates the SAML session and may logout from Active Directory.
+
+5. **Cleanup**:
+   - All participating services clear their respective session data.
+   - User is typically redirected to a logout confirmation page.
+
+## Multiple Sessions
+
+In this architecture, multiple sessions are maintained across different components:
+
+1. **Application Session**:
+   - Managed by the Application (User Interface).
+   - Typically stored in browser cookies or local storage.
+   - Contains application-specific data and references to OAuth tokens.
+
+2. **OAuth Session**:
+   - Managed by the OAuth 2.0/OIDC Authorization Server.
+   - Represented by the issued tokens (access, refresh, ID tokens).
+   - Access tokens have a short lifespan, while refresh tokens may last longer.
+
+3. **SAML Session**:
+   - Managed by the SAML Identity Provider.
+   - Established after successful authentication against Active Directory.
+   - Allows for Single Sign-On (SSO) across multiple applications.
+
+4. **Active Directory Session**:
+   - The underlying session in the corporate directory.
+   - Typically has the longest lifespan of all sessions.
+
+## Session Interactions
+
+- **SSO Experience**: Once authenticated, users can access multiple applications without re-entering credentials, thanks to the SAML and OAuth sessions.
+- **Token Refresh**: Applications use refresh tokens to obtain new access tokens without requiring re-authentication.
+- **Session Expiry**: Different session types may expire at different times, requiring careful handling:
+  - Expired application sessions may require re-authentication with the Authorization Server.
+  - Expired OAuth sessions may fall back to valid SAML sessions for seamless re-authentication.
+  - Expired SAML sessions will require full re-authentication.
+
+## Security Considerations
+
+1. **Token Storage**: Secure storage of tokens in the Application is crucial to prevent token theft.
+2. **Token Validation**: App Services must validate tokens with each request to ensure they haven't been revoked.
+3. **Logout Propagation**: Ensure logout is propagated across all relevant systems to prevent unauthorized access.
+4. **Session Timeouts**: Configure appropriate timeouts for each session type to balance security and user experience.
+5. **Multi-Factor Authentication (MFA)**: Can be integrated into the SAML authentication process for enhanced security.
+
+By understanding these processes and interactions, developers and system architects can implement robust, secure, and user-friendly authentication and authorization flows in complex enterprise environments.
